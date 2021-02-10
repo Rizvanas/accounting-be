@@ -1,0 +1,61 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1.0.1" author="rizvan.chalilovas">
+        <createTable tableName="permissions">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="name" type="VARCHAR(55)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert tableName="permissions">
+            <column name="name" value="ceo:read" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="ceo:write" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="admin:read" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="admin:write" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="employee:read" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="employee:write" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="guest:read" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="name" value="guest:write" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

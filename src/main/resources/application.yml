@@ -1,0 +1,32 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    database-platform: ${JPA_DATABASE_PLATFORM}
+    hibernate:
+      ddl-auto: none
+    properties:
+      jdbc:
+        lob:
+          non_contextual_create: true
+    show-sql: false
+
+  liquibase:
+    change-log: classpath:liquibase/db.changelog-master.xml
+    url: ${DB_URL}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+jwt:
+  header: ${JWT_HEADER}
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
+
+app:
+  version: ${APP_VERSION}
