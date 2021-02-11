@@ -2,6 +2,7 @@ package com.rizvanchalilovas.accountingbe.controllers;
 
 import com.rizvanchalilovas.accountingbe.dtos.authentication.requests.AuthenticationRequest;
 import com.rizvanchalilovas.accountingbe.dtos.user.requests.UserRegistrationRequest;
+import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.exceptions.ApiException;
 import com.rizvanchalilovas.accountingbe.models.User;
 import com.rizvanchalilovas.accountingbe.repositories.UserJpaRepository;
@@ -46,19 +47,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) throws AlreadyExistsException {
         if (userRepository.existsByUsername(request.getUsername())) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiException("Error: Username is already taken",
-                            HttpStatus.CONFLICT,
-                            ZonedDateTime.now(ZoneId.of("Z"))));
+            throw new AlreadyExistsException("User with this username already exists");
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiException("Error: Email is already in use",
-                            HttpStatus.CONFLICT,
-                            ZonedDateTime.now(ZoneId.of("Z"))));
+            throw new AlreadyExistsException("Email is already in use");
         }
 
         if (!request.getPassword().equals(request.getMatchingPassword())) {

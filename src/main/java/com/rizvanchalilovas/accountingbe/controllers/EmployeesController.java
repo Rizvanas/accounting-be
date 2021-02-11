@@ -2,6 +2,7 @@ package com.rizvanchalilovas.accountingbe.controllers;
 
 import com.rizvanchalilovas.accountingbe.dtos.user.requests.EmployeeInvitationRequest;
 import com.rizvanchalilovas.accountingbe.dtos.user.requests.EmployeeRemovalRequest;
+import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.services.interfaces.CompanyService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class EmployeesController {
     public ResponseEntity<?> inviteEmployee(
             @PathVariable Long companyId,
             @Valid @RequestBody EmployeeInvitationRequest request
-    ) throws NotFoundException {
+    ) throws NotFoundException, AlreadyExistsException {
 
         var employeesResponse = companyService.addEmployee(companyId, request);
 

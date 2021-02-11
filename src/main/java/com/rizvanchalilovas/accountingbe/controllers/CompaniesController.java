@@ -3,6 +3,7 @@ package com.rizvanchalilovas.accountingbe.controllers;
 import com.rizvanchalilovas.accountingbe.dtos.company.requests.CompanyAdditionRequest;
 import com.rizvanchalilovas.accountingbe.dtos.company.requests.CompanyUpdateRequest;
 import com.rizvanchalilovas.accountingbe.dtos.company.responses.CompanyDetailsResponse;
+import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.models.Company;
 import com.rizvanchalilovas.accountingbe.services.interfaces.CompanyService;
 import javassist.NotFoundException;
@@ -35,7 +36,7 @@ public class CompaniesController {
 
     @PostMapping
     public ResponseEntity<CompanyDetailsResponse> add(@Valid @RequestBody CompanyAdditionRequest request)
-            throws NotFoundException {
+            throws NotFoundException, AlreadyExistsException {
         var companyResponse = companyService.addNewCompany(request);
 
         return ResponseEntity
