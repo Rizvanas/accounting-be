@@ -32,7 +32,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
-
     private final AuthenticationManager authenticationManager;
     private final UserJpaRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
