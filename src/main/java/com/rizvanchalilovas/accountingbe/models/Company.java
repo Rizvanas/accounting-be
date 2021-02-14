@@ -19,13 +19,13 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 public class Company extends BaseEntity {
+    @NotNull
+    @Length(min = 3, max = 255)
     @Column(name = "name")
-    @NotNull(message = "field name cannot be null.")
-    @Length(min = 3, max = 255, message = "Company name length must be between 3 and 255 characters")
     private String name;
 
-    @Column(name = "description")
     @Length(max = 255)
+    @Column(name = "description")
     private String description;
 
     @JsonIgnore
@@ -33,14 +33,14 @@ public class Company extends BaseEntity {
     @JoinColumn(name = "ceo_id")
     private User owner;
 
+    @NotNull
+    @PositiveOrZero
     @Column(name = "total_income")
-    @NotNull(message = "field totalIncome cannot be null")
-    @PositiveOrZero(message = "field totalIncome cannot be initialized to a negative value.")
     private Long totalIncome = 0L;
 
+    @NotNull
+    @PositiveOrZero
     @Column(name = "total_expenditure")
-    @NotNull(message = "field totalExpenditure cannot be null")
-    @PositiveOrZero(message = "field totalExpenditure cannot be initialized to a negative value.")
     private Long totalExpenditure = 0L;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

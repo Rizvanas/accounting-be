@@ -7,11 +7,11 @@ import javassist.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,23 +32,26 @@ import java.util.stream.Collectors;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status,
+            @NonNull WebRequest request
     ) {
         List<String> errors = new ArrayList<>();
+
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }
+
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
+            errors.add(error.getClass().getSimpleName() + " " + error.getObjectName() + ": "
+                    + error.getDefaultMessage());
         }
 
         ApiException apiError = new ApiException(
                 HttpStatus.BAD_REQUEST,
-                ex.getLocalizedMessage(),
                 errors,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -57,14 +60,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+            MissingServletRequestParameterException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status,
+            @NonNull WebRequest request
+    ) {
         String error = ex.getParameterName() + " parameter is missing";
 
         ApiException apiException = new ApiException(
                 HttpStatus.BAD_REQUEST,
-                ex.getLocalizedMessage(),
                 error,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -73,13 +79,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            NoHandlerFoundException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status,
+            @NonNull WebRequest request
+    ) {
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
 
         ApiException apiError = new ApiException(
                 HttpStatus.NOT_FOUND,
-                ex.getLocalizedMessage(),
                 error,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -88,11 +98,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status,
+            @NonNull WebRequest request
     ) {
 
         StringBuilder builder = new StringBuilder();
@@ -103,7 +114,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiException apiError = new ApiException(
                 HttpStatus.METHOD_NOT_ALLOWED,
-                ex.getLocalizedMessage(),
                 builder.toString(),
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -114,16 +124,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolation(
-            ConstraintViolationException ex, WebRequest request) {
+            ConstraintViolationException ex) {
 
         List<String> errors = ex.getConstraintViolations().stream()
-                .map(v -> v.getRootBeanClass().getName() + " " +
+                .map(v -> v.getRootBeanClass().getSimpleName() + " " +
                         v.getPropertyPath() + ": " + v.getMessage())
                 .collect(Collectors.toList());
 
         var apiError = new ApiException(
                 HttpStatus.BAD_REQUEST,
-                ex.getLocalizedMessage(),
                 errors,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -133,13 +142,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException ex, WebRequest request) {
+            MethodArgumentTypeMismatchException ex) {
         String error =
-                ex.getName() + " should be of type " + Objects.requireNonNull(ex.getRequiredType()).getName();
+                ex.getName() + " should be of type " + Objects.requireNonNull(ex.getRequiredType()).getSimpleName();
 
         ApiException apiError = new ApiException(
                 HttpStatus.BAD_REQUEST,
-                ex.getLocalizedMessage(),
                 error,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -149,10 +157,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ Exception.class })
-    public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+    public ResponseEntity<Object> handleAll(Exception ex) {
         ApiException apiError = new ApiException(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getLocalizedMessage(),
                 "error occurred",
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -164,13 +171,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {
             ApiRequestException.class,
             IllegalArgumentException.class,
-            IllegalStateException.class,
-            MissingPathVariableException.class
+            IllegalStateException.class
     })
     public ResponseEntity<Object> handleApiRequestException(RuntimeException ex) {
         var exception = new ApiException(
                 HttpStatus.BAD_REQUEST,
-                ex.getLocalizedMessage(),
                 ex.getMessage(),
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -182,7 +187,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleNotFoundException(Exception ex) {
         var exception = new ApiException(
                 HttpStatus.NOT_FOUND,
-                ex.getLocalizedMessage(),
                 ex.getMessage(),
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
@@ -194,7 +198,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleIllegalStateException(Exception ex) {
         var exception = new ApiException(
                 HttpStatus.CONFLICT,
-                ex.getLocalizedMessage(),
                 ex.getMessage(),
                 ZonedDateTime.now(ZoneId.of("Z"))
         );

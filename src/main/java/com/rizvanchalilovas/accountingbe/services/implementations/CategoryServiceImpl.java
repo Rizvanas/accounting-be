@@ -62,11 +62,11 @@ public class CategoryServiceImpl implements CategoryService {
         var parent = request.getParentId() == null ? null :
                 categoryRepository.findById(request.getParentId()).orElse(null);
 
-        var category = new Category(request.getTitle(), request.getDescription(), employee, parent, company);
+        var category = new Category(request.getTitle(), request.getDescription().get(), employee, parent, company);
         category = categoryRepository.save(category);
 
         transactionService.addTransactions(
-                category.getId(),
+                category,
                 request.getTransactions().toArray(new TransactionAdditionRequest[0])
         );
 

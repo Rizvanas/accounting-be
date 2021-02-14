@@ -48,6 +48,6 @@ public class CompanyEmployee extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(company.getName(), user.getFullName(), role.getName());
+        return Objects.hash(company.getName(), user.getUsername(), role.getName());
     }
 }

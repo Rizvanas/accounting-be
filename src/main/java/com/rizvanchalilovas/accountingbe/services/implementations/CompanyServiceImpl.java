@@ -104,7 +104,7 @@ public class CompanyServiceImpl implements CompanyService {
             throw new AlreadyExistsException("Company with name: already exists");
         }
 
-        var company = new Company(request.getCompanyName(), request.getDescription(), user);
+        var company = new Company(request.getCompanyName(), request.getDescription().get(), user);
         var role = roleRepository.findByName(RoleEnum.CEO);
         var companyEmployee = new CompanyEmployee(company, user, role);
 
@@ -120,16 +120,16 @@ public class CompanyServiceImpl implements CompanyService {
         var company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new NotFoundException("Company with id: could not fe found"));
 
-        if (request.getName() != null && !request.getName().isBlank()) {
-            company.setName(request.getName());
+        if (request.getName().isPresent()) {
+            company.setName(request.getName().get());
         }
 
-        if (request.getDescription() != null && !request.getDescription().isBlank()) {
-            company.setDescription(request.getDescription());
+        if (request.getDescription().isPresent()) {
+            company.setDescription(request.getDescription().get());
         }
 
-        if (request.getOwnerUsername() != null && !request.getOwnerUsername().isBlank()) {
-            var employee = employeeRepository.findByUserUsername(request.getOwnerUsername())
+        if (request.getOwnerUsername().isPresent()) {
+            var employee = employeeRepository.findByUserUsername(request.getOwnerUsername().get())
                     .orElseThrow(() -> new NotFoundException("User could not be found"));
 
             var currentCeo = employeeRepository

@@ -5,20 +5,23 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.openapitools.jackson.nullable.JsonNullable;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-@AllArgsConstructor
 @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CompanyAdditionRequest {
     @NotNull
     private String username;
 
-    @NotNull(message = "field name cannot be null.")
-    @Size(min = 3, max = 255, message = "Company name length must be between 3 and 255 characters")
+    @NotNull
+    @Size(min = 3, max = 255)
     private String companyName;
 
-    private String description;
+    @NotBlank
+    private JsonNullable<String> description = JsonNullable.undefined();
 }

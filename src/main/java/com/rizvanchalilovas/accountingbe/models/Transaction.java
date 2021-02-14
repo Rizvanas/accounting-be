@@ -15,18 +15,18 @@ import javax.validation.constraints.*;
 @Table(name = "transactions")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Transaction extends BaseEntity {
-    @Column(name = "title")
-    @NotBlank(message = "title is required")
+    @NotBlank
     @Length(min = 3, max = 255)
+    @Column(name = "title")
     private String title;
 
+    @Length(min = 3, max = 255)
     @Column(name = "comment")
-    @Length(min = 3, max = 255, message = "field comment must be between 3 and 255 characters long.")
     private String comment;
 
+    @NotNull
+    @Positive
     @Column(name = "money_amount")
-    @NotNull(message = "moneyAmount cannot be null")
-    @Positive(message = "moneyAmount value must be greater than 0.")
     private Long moneyAmount;
 
     @Enumerated(value = EnumType.STRING)
@@ -39,10 +39,9 @@ public class Transaction extends BaseEntity {
     private Category category;
 
     public Transaction(
-            @NotBlank(message = "title is required") @Length(min = 3, max = 255) String title,
-            @Length(min = 3, max = 255, message = "field comment must be between 3 and 255 characters long.") String comment,
-            @NotNull(message = "moneyAmount cannot be null")
-            @Positive(message = "moneyAmount value must be greater than 0.") Long moneyAmount,
+            @NotBlank @Length(min = 3, max = 255) String title,
+            @NotBlank @Length(min = 3, max = 255) String comment,
+            @NotNull @Positive Long moneyAmount,
             TransactionType type,
             Category category
     ) {

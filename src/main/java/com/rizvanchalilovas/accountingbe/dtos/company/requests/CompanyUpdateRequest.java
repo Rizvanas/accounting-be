@@ -6,14 +6,24 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+import org.openapitools.jackson.nullable.JsonNullable;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CompanyUpdateRequest {
-    private String name;
-    private String description;
-    private String ownerUsername;
+    @NotBlank
+    @Length(min = 3, max = 255)
+    private JsonNullable<String> name = JsonNullable.undefined();
+
+    @NotBlank
+    @Length(min = 3, max = 255)
+    private JsonNullable<String> description = JsonNullable.undefined();
+
+    @NotBlank
+    private JsonNullable<String> ownerUsername = JsonNullable.undefined();
 }

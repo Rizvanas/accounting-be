@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -37,8 +38,10 @@ public class CategoriesController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
     @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryDetailsResponse> get(@PathVariable Long companyId, @PathVariable Long categoryId)
-            throws NotFoundException {
+    public ResponseEntity<CategoryDetailsResponse> get(
+            @PathVariable Long companyId,
+            @PathVariable Long categoryId
+    ) throws NotFoundException {
 
         var category = categoryService.findCategoryById(categoryId);
 
@@ -49,7 +52,7 @@ public class CategoriesController {
     @PostMapping
     public ResponseEntity<CategoryResponse> addNewCategory(
             @PathVariable Long companyId,
-            @RequestBody CategoryAdditionRequest request,
+            @Valid @RequestBody CategoryAdditionRequest request,
             UriComponentsBuilder builder
     ) throws NotFoundException {
         var response = categoryService.addNewCategory(companyId, request);
@@ -66,7 +69,7 @@ public class CategoriesController {
     public ResponseEntity<CategoryResponse> updateCategory(
             @PathVariable Long companyId,
             @PathVariable Long categoryId,
-            @RequestBody CategoryUpdateRequest request,
+            @Valid @RequestBody CategoryUpdateRequest request,
             UriComponentsBuilder builder
     ) throws NotFoundException {
         var response = categoryService.updateCategory(categoryId, request);

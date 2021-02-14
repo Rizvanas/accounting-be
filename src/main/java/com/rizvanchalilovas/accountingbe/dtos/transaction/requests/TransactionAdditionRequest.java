@@ -12,15 +12,16 @@ import javax.validation.constraints.*;
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
 public class TransactionAdditionRequest {
-    @NotBlank(message = "[title]: is required")
-    @Size(min = 3, max = 255, message = "[title]: must be between 3 and 255 characters long.")
+    @NotEmpty
+    @NotBlank
+    @Size(min = 3, max = 255)
     private String title;
 
-    @Size(min = 3, max = 255, message = "[comment]: must be between 3 and 255 characters long.")
+    @Size(min = 3, max = 255)
     private String comment;
 
-    @NotNull(message = "[money_amount]: cannot be null")
-    @PositiveOrZero(message = "[money_amount]: value must be greater than 0.")
+    @NotNull
+    @PositiveOrZero
     private Long moneyAmount;
 
     @NotNull

@@ -20,13 +20,13 @@ import java.util.Set;
 @Table(name = "categories")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Category extends BaseEntity {
-    @Column(name = "title")
-    @NotBlank(message = "Category title is required")
+    @NotBlank
     @Length(min = 3, max = 50)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "description")
     @Length(max = 255)
+    @Column(name = "description")
     private String description;
 
     @JsonIgnore

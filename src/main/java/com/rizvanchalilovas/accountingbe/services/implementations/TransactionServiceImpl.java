@@ -12,8 +12,10 @@ import com.rizvanchalilovas.accountingbe.repositories.TransactionJpaRepository;
 import com.rizvanchalilovas.accountingbe.services.interfaces.TransactionService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +65,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         var category = categoriesRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category could not be found"));
+
+        return addTransactions(category, requests);
+    }
+
+    @Override
+    public List<TransactionResponse> addTransactions(
+            @NonNull Category category,
+            TransactionAdditionRequest... requests
+    ) {
 
         var transactions = Arrays.stream(requests).map(r -> new Transaction(
                 r.getTitle(),
