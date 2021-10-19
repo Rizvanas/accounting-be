@@ -18,11 +18,13 @@ import lombok.Data;
 public class EmployeeResponse {
     private Long id;
     private String fullName;
+    private String email;
 
     public static EmployeeResponse fromEmployee(CompanyEmployee employee) {
         return builder()
                 .id(employee.getId())
                 .fullName(employee.getUser().getFullName())
+                .email(employee.getUser().getEmail())
                 .build();
     }
 }

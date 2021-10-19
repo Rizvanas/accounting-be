@@ -3,6 +3,7 @@ package com.rizvanchalilovas.accountingbe.controllers;
 import com.rizvanchalilovas.accountingbe.dtos.company.requests.CompanyAdditionRequest;
 import com.rizvanchalilovas.accountingbe.dtos.company.requests.CompanyUpdateRequest;
 import com.rizvanchalilovas.accountingbe.dtos.company.responses.CompanyDetailsResponse;
+import com.rizvanchalilovas.accountingbe.dtos.company.responses.CompanyListItem;
 import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.models.Company;
 import com.rizvanchalilovas.accountingbe.services.interfaces.CompanyService;
@@ -27,15 +28,25 @@ public class CompaniesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Company>> list(Principal principal)
+    public ResponseEntity<List<CompanyListItem>> list(Principal principal)
             throws NotFoundException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(companyService.getAllCompanies());
     }
 
+    @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
+    @GetMapping("/{companyId}")
+    public ResponseEntity<?> get(@PathVariable Long companyId) throws NotFoundException {
+        var response = companyService.getById(companyId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
     @PostMapping
-    public ResponseEntity<CompanyDetailsResponse> add(@Valid @RequestBody CompanyAdditionRequest request)
+    public ResponseEntity<CompanyListItem> add(@Valid @RequestBody CompanyAdditionRequest request)
             throws NotFoundException, AlreadyExistsException {
         var companyResponse = companyService.addNewCompany(request);
 

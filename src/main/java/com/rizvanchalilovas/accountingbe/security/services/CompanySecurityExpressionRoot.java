@@ -89,7 +89,7 @@ public class CompanySecurityExpressionRoot
 
             if (companyAuthority.getCompanyId() != companyId) continue;
 
-            if (Arrays.stream(permissions).anyMatch(p -> p.equalsIgnoreCase(companyAuthority.getAuthority()))) {
+            if (Arrays.stream(permissions).anyMatch(p -> p.equalsIgnoreCase(companyAuthority.getName()))) {
                 return true;
             }
         }

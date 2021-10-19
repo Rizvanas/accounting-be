@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface CompanyJpaRepository extends JpaRepository<Company, Long> {
     Company findByName(String name);
     Boolean existsByName(String name);
@@ -20,4 +22,7 @@ public interface CompanyJpaRepository extends JpaRepository<Company, Long> {
             @Param("userId") Long userId,
             @Param("roleId") Long roleId
     );
+
+    @Query("SELECT c FROM Company c LEFT JOIN c.employees employees WHERE employees.user.email LIKE %?1%")
+    List<Company> findAllByEmployeesUserEmailContains(String email);
 }

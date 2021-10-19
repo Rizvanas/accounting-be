@@ -3,6 +3,7 @@ package com.rizvanchalilovas.accountingbe.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.*;
 @Data
 @NoArgsConstructor
 @Table(name = "transactions")
+@EqualsAndHashCode
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Transaction extends BaseEntity {
     @NotBlank

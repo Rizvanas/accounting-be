@@ -1,8 +1,8 @@
 package com.rizvanchalilovas.accountingbe.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "companies")
+@EqualsAndHashCode
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 public class Company extends BaseEntity {
@@ -27,11 +28,6 @@ public class Company extends BaseEntity {
     @Length(max = 255)
     @Column(name = "description")
     private String description;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "ceo_id")
-    private User owner;
 
     @NotNull
     @PositiveOrZero
@@ -46,13 +42,12 @@ public class Company extends BaseEntity {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<CompanyEmployee> employees = new HashSet<>();
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Category> categories = new ArrayList<>();
 
-    public Company(String name, String description, User owner) {
+    public Company(String name, String description) {
         this.name = name;
         this.description = description;
-        this.owner = owner;
     }
 
     public boolean employeeExists(User user) {

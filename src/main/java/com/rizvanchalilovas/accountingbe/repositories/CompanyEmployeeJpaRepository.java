@@ -10,4 +10,5 @@ public interface CompanyEmployeeJpaRepository extends JpaRepository<CompanyEmplo
     Optional<CompanyEmployee> findByUserId(Long userId);
     Optional<CompanyEmployee> findByUserUsername(String username);
     Optional<CompanyEmployee> findFirstByRoleName(RoleEnum roleName);
+    Optional<CompanyEmployee> findByUserEmail(String email);
 }

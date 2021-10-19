@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponse> getCategoriesByCompanyId(Long companyId) throws NotFoundException {
 
-        var categories = categoryRepository.findCategoriesByCompanyId(companyId);
+        var categories = categoryRepository.findAllByCompanyIdAndParentNull(companyId);
 
         if (categories.isEmpty()) {
             throw new NotFoundException("No categories were found");
@@ -92,9 +92,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDetailsResponse findCategoryById(Long id) throws NotFoundException {
+    public CategoryResponse findCategoryById(Long id) throws NotFoundException {
         return categoryRepository.findById(id)
-                .map(CategoryDetailsResponse::toCategoryDetailsResponse)
+                .map(CategoryResponse::fromCategory)
                 .orElseThrow(() -> new NotFoundException("Category with id: could not be found"));
     }
 

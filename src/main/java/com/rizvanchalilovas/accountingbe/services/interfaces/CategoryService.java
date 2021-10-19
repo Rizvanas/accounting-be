@@ -13,7 +13,7 @@ public interface CategoryService {
 
     List<CategoryResponse> getCategoriesByCompanyId(Long companyId) throws NotFoundException;
 
-    CategoryDetailsResponse findCategoryById(Long id) throws NotFoundException;
+    CategoryResponse findCategoryById(Long id) throws NotFoundException;
 
     CategoryResponse addNewCategory(Long companyId, CategoryAdditionRequest request) throws NotFoundException;
 

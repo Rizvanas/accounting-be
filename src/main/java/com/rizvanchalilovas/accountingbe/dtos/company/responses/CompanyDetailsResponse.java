@@ -7,10 +7,13 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.rizvanchalilovas.accountingbe.dtos.category.responses.CategoryResponse;
 import com.rizvanchalilovas.accountingbe.dtos.user.responses.EmployeeResponse;
 import com.rizvanchalilovas.accountingbe.models.Company;
+import com.rizvanchalilovas.accountingbe.models.Permission;
+import com.rizvanchalilovas.accountingbe.models.RoleEnum;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -23,20 +26,34 @@ public class CompanyDetailsResponse {
     private String name;
     private String description;
     private String ownerUsername;
+    private String ownerEmail;
     private String ownerFullName;
     private Long totalIncome;
     private Long totalExpenditure;
+    private Set<Permission> currentUserPermissions;
     private List<EmployeeResponse> employees;
     private List<CategoryResponse> categories;
 
-    public static CompanyDetailsResponse fromCompany(Company c) {
+    public static CompanyDetailsResponse fromCompany(Company c, String loggedInEmail) {
+        var companyCeo = c.getEmployees().stream()
+                .filter(emp -> emp.getRole().getName() == RoleEnum.CEO)
+                .findFirst()
+                .get().getUser();
+
+        var loggedInRole = c.getEmployees().stream()
+                .filter(emp -> emp.getUser().getEmail().equals(loggedInEmail))
+                .findFirst()
+                .get().getRole();
+
         return builder()
                 .id(c.getId())
                 .name(c.getName())
                 .description(c.getDescription())
-                .ownerUsername(c.getOwner().getUsername())
-                .ownerFullName(c.getOwner().getFullName())
+                .ownerUsername(companyCeo.getUsername())
+                .ownerFullName(companyCeo.getFullName())
+                .ownerEmail(companyCeo.getEmail())
                 .totalIncome(c.getTotalIncome())
+                .currentUserPermissions(loggedInRole.getPermissions())
                 .totalExpenditure(c.getTotalExpenditure())
                 .employees(c.getEmployees().stream()
                         .map(EmployeeResponse::fromEmployee)

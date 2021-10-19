@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -21,7 +22,7 @@ public class UserRegistrationRequest {
 
     @NotNull
     @NotEmpty
-    @Size(min = 8, max = 255)
+    @Length(min = 3, max = 50)
     private String username;
 
     @NotNull

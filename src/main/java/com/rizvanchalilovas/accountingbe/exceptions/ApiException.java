@@ -1,5 +1,6 @@
 package com.rizvanchalilovas.accountingbe.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -11,6 +12,8 @@ import java.util.List;
 public class ApiException {
     private final HttpStatus status;
     private final List<String> errors;
+
+    @JsonIgnore
     private final ZonedDateTime timestamp;
 
     public ApiException(HttpStatus status, List<String> errors, ZonedDateTime timestamp) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -50,9 +51,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "manager")
     private List<Category> categories;
-
-    @OneToMany(mappedBy = "owner")
-    private List<Company> ownedCompanies;
 
     public User(String username, String email, String password, String firstName, String lastName) {
         this.username = username;

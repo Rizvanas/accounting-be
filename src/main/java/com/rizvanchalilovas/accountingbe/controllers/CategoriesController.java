@@ -38,7 +38,7 @@ public class CategoriesController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
     @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryDetailsResponse> get(
+    public ResponseEntity<CategoryResponse> get(
             @PathVariable Long companyId,
             @PathVariable Long categoryId
     ) throws NotFoundException {

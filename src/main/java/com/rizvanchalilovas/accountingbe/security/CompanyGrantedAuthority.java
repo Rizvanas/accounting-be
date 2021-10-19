@@ -1,9 +1,12 @@
 package com.rizvanchalilovas.accountingbe.security;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
-@Getter
+@Data
+@EqualsAndHashCode
 public class CompanyGrantedAuthority implements GrantedAuthority {
 
     private final String name;
@@ -16,6 +19,6 @@ public class CompanyGrantedAuthority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return name;
+        return name + ":companyId:" + companyId;
     }
 }

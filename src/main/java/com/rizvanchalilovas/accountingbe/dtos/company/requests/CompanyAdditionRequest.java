@@ -16,9 +16,6 @@ import javax.validation.constraints.Size;
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CompanyAdditionRequest {
     @NotNull
-    private String username;
-
-    @NotNull
     @Size(min = 3, max = 255)
     private String companyName;
 

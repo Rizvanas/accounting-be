@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -28,7 +27,7 @@ public class CategoryDetailsResponse {
     private Long totalExpenditure;
     private List<TransactionResponse> transactions;
     private Category parent;
-    private Set<Category> subCategories;
+    private List<CategoryResponse> subCategories;
     private Long companyId;
 
     public static CategoryDetailsResponse toCategoryDetailsResponse(Category c) {
@@ -44,7 +43,9 @@ public class CategoryDetailsResponse {
                         .map(TransactionResponse::fromTransaction)
                         .collect(Collectors.toList()))
                 .parent(c.getParent())
-                .subCategories(c.getSubCategories())
+                .subCategories(c.getSubCategories().stream()
+                        .map(CategoryResponse::fromCategory)
+                        .collect(Collectors.toList()))
                 .companyId(c.getCompany().getId())
                 .build();
     }

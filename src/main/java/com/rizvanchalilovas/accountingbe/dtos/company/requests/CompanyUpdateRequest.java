@@ -23,7 +23,4 @@ public class CompanyUpdateRequest {
     @NotBlank
     @Length(min = 3, max = 255)
     private JsonNullable<String> description = JsonNullable.undefined();
-
-    @NotBlank
-    private JsonNullable<String> ownerUsername = JsonNullable.undefined();
 }

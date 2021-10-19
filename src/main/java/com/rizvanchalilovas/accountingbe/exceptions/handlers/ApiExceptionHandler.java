@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -199,6 +200,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         var exception = new ApiException(
                 HttpStatus.CONFLICT,
                 ex.getMessage(),
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(exception, exception.getStatus());
+    }
+
+    @ExceptionHandler(value = {AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        var exception = new ApiException(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid email or password",
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
 
