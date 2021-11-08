@@ -19,4 +19,5 @@ import javax.validation.constraints.NotNull;
 public class EmployeeInvitationRequest {
     @NotNull
     String username;
+    boolean isGuest;
 }

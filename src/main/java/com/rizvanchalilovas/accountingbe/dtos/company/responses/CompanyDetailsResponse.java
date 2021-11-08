@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.rizvanchalilovas.accountingbe.dtos.category.responses.CategoryResponse;
 import com.rizvanchalilovas.accountingbe.dtos.user.responses.EmployeeResponse;
 import com.rizvanchalilovas.accountingbe.models.Company;
-import com.rizvanchalilovas.accountingbe.models.Permission;
+import com.rizvanchalilovas.accountingbe.models.PermissionEnum;
 import com.rizvanchalilovas.accountingbe.models.RoleEnum;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class CompanyDetailsResponse {
     private String ownerFullName;
     private Long totalIncome;
     private Long totalExpenditure;
-    private Set<Permission> currentUserPermissions;
+    private Set<PermissionEnum> currentUserPermissions;
     private List<EmployeeResponse> employees;
     private List<CategoryResponse> categories;
 
@@ -53,7 +53,9 @@ public class CompanyDetailsResponse {
                 .ownerFullName(companyCeo.getFullName())
                 .ownerEmail(companyCeo.getEmail())
                 .totalIncome(c.getTotalIncome())
-                .currentUserPermissions(loggedInRole.getPermissions())
+                .currentUserPermissions(loggedInRole.getPermissions().stream()
+                        .map(PermissionEnum::fromPermission)
+                        .collect(Collectors.toSet()))
                 .totalExpenditure(c.getTotalExpenditure())
                 .employees(c.getEmployees().stream()
                         .map(EmployeeResponse::fromEmployee)

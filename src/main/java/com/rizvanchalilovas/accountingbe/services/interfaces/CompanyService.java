@@ -14,13 +14,24 @@ import javassist.NotFoundException;
 import java.util.List;
 
 public interface CompanyService {
-    List<CompanyListItem> getAllCompanies() throws NotFoundException;
-    List<EmployeeResponse> addEmployee(Long companyId, EmployeeInvitationRequest request) throws NotFoundException, AlreadyExistsException;
-    CompanyListItem addNewCompany(CompanyAdditionRequest request) throws NotFoundException, AlreadyExistsException;
-    void removeEmployee(Long companyId, EmployeeRemovalRequest request) throws NotFoundException;
-    void removeCompany(Long companyId) throws NotFoundException;
+    List<CompanyListItem> getAllCompanies()
+            throws NotFoundException;
 
-    CompanyDetailsResponse updateCompanyDetails(Long companyId, CompanyUpdateRequest request) throws NotFoundException;
+    EmployeeResponse addEmployee(Long companyId, EmployeeInvitationRequest request)
+            throws NotFoundException, AlreadyExistsException;
 
-    CompanyDetailsResponse getById(Long companyId) throws NotFoundException;
+    void removeEmployee(Long companyId, Long employeeId)
+            throws NotFoundException;
+
+    CompanyListItem addNewCompany(CompanyAdditionRequest request)
+            throws NotFoundException, AlreadyExistsException;
+
+    void removeCompany(Long companyId)
+            throws NotFoundException;
+
+    CompanyDetailsResponse updateCompanyDetails(Long companyId, CompanyUpdateRequest request)
+            throws NotFoundException;
+
+    CompanyDetailsResponse getById(Long companyId)
+            throws NotFoundException;
 }

@@ -3,7 +3,6 @@ package com.rizvanchalilovas.accountingbe.services.implementations;
 import com.rizvanchalilovas.accountingbe.dtos.user.requests.UserRegistrationRequest;
 import com.rizvanchalilovas.accountingbe.dtos.user.responses.UserResponse;
 import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
-import com.rizvanchalilovas.accountingbe.models.Status;
 import com.rizvanchalilovas.accountingbe.models.User;
 import com.rizvanchalilovas.accountingbe.repositories.UserJpaRepository;
 import com.rizvanchalilovas.accountingbe.services.interfaces.UserService;
@@ -13,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,13 +50,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserResponse> getAll() {
+        return userRepository.findAll().stream()
+                .map(UserResponse::fromUser)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<User> findByUsernameStartsWith(String username) {
-        return userRepository.findByUsernameContains(username);
+    public List<UserResponse> findByUsernameStartsWith(String username) {
+        var users = userRepository.findByUsernameContains(username.toLowerCase());
+        return users.stream()
+                .map(UserResponse::fromUser)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -76,8 +81,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.getOne(id);
+    public UserResponse findById(Long id) {
+        return UserResponse.fromUser(userRepository.getOne(id));
     }
 
     @Override

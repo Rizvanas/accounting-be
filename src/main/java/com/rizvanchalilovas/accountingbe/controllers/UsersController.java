@@ -19,9 +19,18 @@ public class UsersController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         var user = userService.findById(id);
 
-        return new ResponseEntity<>(UserResponse.fromUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        var users = userService.getAll();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(users);
     }
 }

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CategoryResponse {
     private Long id;
@@ -27,9 +26,11 @@ public class CategoryResponse {
     private Long totalExpenditure;
     private List<TransactionResponse> transactions;
     private List<CategoryResponse> subCategories;
+    private Long parentId;
     private Long companyId;
 
     public static CategoryResponse fromCategory(Category c) {
+        Long parentId = c.getParent() == null ? null : c.getParent().getId();
         return builder()
                 .id(c.getId())
                 .title(c.getTitle())
@@ -43,6 +44,7 @@ public class CategoryResponse {
                 .subCategories(c.getSubCategories().stream()
                         .map(CategoryResponse::fromCategory)
                         .collect(Collectors.toList()))
+                .parentId(parentId)
                 .companyId(c.getCompany().getId())
                 .build();
     }

@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface UserService {
     UserResponse register(UserRegistrationRequest request) throws AlreadyExistsException;
-    List<User> getAll();
-    List<User> findByUsernameStartsWith(String username);
+    List<UserResponse> getAll();
+    List<UserResponse> findByUsernameStartsWith(String username);
     UserResponse findByUsername(String username) throws NotFoundException;
     UserResponse findByEmail(String email) throws NotFoundException;
-    User findById(Long id);
+    UserResponse findById(Long id);
     void deleteById(Long id);
 }

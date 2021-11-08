@@ -21,7 +21,7 @@ public class TransactionAdditionRequest {
     private String comment;
 
     @NotNull
-    @PositiveOrZero
+    @Positive
     private Long moneyAmount;
 
     @NotNull

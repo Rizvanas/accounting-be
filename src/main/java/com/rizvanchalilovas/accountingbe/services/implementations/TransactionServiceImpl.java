@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -142,6 +140,10 @@ public class TransactionServiceImpl implements TransactionService {
         var changeInExpenditure = transaction.getType().equals(TransactionType.EXPENDITURE)
                 ? - transaction.getMoneyAmount() : 0L;
 
+
+        category.setTotalIncome(category.getTotalIncome() + changeInIncome);
+        category.setTotalExpenditure(category.getTotalExpenditure() + changeInExpenditure);
+
         updateCompany(category.getCompany(), changeInIncome, changeInExpenditure);
         updateParentCategories(category, changeInIncome, changeInExpenditure);
 
@@ -196,11 +198,19 @@ public class TransactionServiceImpl implements TransactionService {
             newExpenditure = request.getMoneyAmount().get();
         }
 
+        transaction.setMoneyAmount(request.getMoneyAmount().get());
+        transaction.setType(requestType);
+
         var changeInIncome = newIncome - oldIncome;
         var changeInExpenditure = newExpenditure - oldExpenditure;
 
-        updateCompany(transaction.getCategory().getCompany(), changeInIncome, changeInExpenditure);
-        updateParentCategories(transaction.getCategory(), changeInIncome, changeInExpenditure);
+        var category = transaction.getCategory();
+
+        category.setTotalIncome(category.getTotalIncome() + changeInIncome);
+        category.setTotalExpenditure(category.getTotalExpenditure() + changeInExpenditure);
+
+        updateCompany(category.getCompany(), changeInIncome, changeInExpenditure);
+        updateParentCategories(category, changeInIncome, changeInExpenditure);
     }
 
     private void updateCompany(Company company, Long changeInIncome, Long changeInExpenditure) {

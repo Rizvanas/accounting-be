@@ -2,16 +2,15 @@ package com.rizvanchalilovas.accountingbe.services.implementations;
 
 import com.rizvanchalilovas.accountingbe.dtos.company.requests.CompanyAdditionRequest;
 import com.rizvanchalilovas.accountingbe.dtos.company.requests.CompanyUpdateRequest;
+import com.rizvanchalilovas.accountingbe.dtos.company.responses.CompanyDetailsResponse;
 import com.rizvanchalilovas.accountingbe.dtos.company.responses.CompanyListItem;
 import com.rizvanchalilovas.accountingbe.dtos.user.requests.EmployeeInvitationRequest;
 import com.rizvanchalilovas.accountingbe.dtos.user.requests.EmployeeRemovalRequest;
-import com.rizvanchalilovas.accountingbe.dtos.company.responses.CompanyDetailsResponse;
 import com.rizvanchalilovas.accountingbe.dtos.user.responses.EmployeeResponse;
 import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.models.Company;
 import com.rizvanchalilovas.accountingbe.models.CompanyEmployee;
 import com.rizvanchalilovas.accountingbe.models.RoleEnum;
-import com.rizvanchalilovas.accountingbe.models.User;
 import com.rizvanchalilovas.accountingbe.repositories.*;
 import com.rizvanchalilovas.accountingbe.services.interfaces.CompanyService;
 import javassist.NotFoundException;
@@ -78,7 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<EmployeeResponse> addEmployee(Long companyId, EmployeeInvitationRequest request)
+    public EmployeeResponse addEmployee(Long companyId, EmployeeInvitationRequest request)
             throws NotFoundException, AlreadyExistsException {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new NotFoundException("User not found"));
@@ -89,27 +88,25 @@ public class CompanyServiceImpl implements CompanyService {
         if (company.employeeExists(user)) {
             throw new AlreadyExistsException("User is already an employee of this company");
         }
-        var role = roleRepository.findByName(RoleEnum.EMPLOYEE);
+
+        var role = roleRepository.findByName(request.isGuest() ? RoleEnum.GUEST : RoleEnum.EMPLOYEE);
 
         var companyEmployee = new CompanyEmployee(company, user, role);
         role.getEmployees().add(companyEmployee);
 
         company = companyRepository.saveAndFlush(company);
 
-        return company
-                .getEmployees()
-                .stream()
-                .map(EmployeeResponse::fromEmployee)
-                .collect(Collectors.toList());
+        return EmployeeResponse.fromEmployee(companyEmployee);
     }
 
     @Override
-    public void removeEmployee(Long companyId, EmployeeRemovalRequest request) throws NotFoundException {
+    public void removeEmployee(Long companyId, Long employeeId)
+            throws NotFoundException {
         var company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new NotFoundException("Company with id: could not fe found"));
 
-        var employee = employeeRepository.findByUserUsername(request.getUsername())
-                .orElseThrow(() -> new NotFoundException("User is not an employee of this company"));
+        var employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundException("Could not find such employee"));
 
         //employeeRepository.delete(employee);
         System.out.println(employee.getUser().getUsername());

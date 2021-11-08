@@ -27,7 +27,7 @@ public class TransactionsController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
     @GetMapping
-    public ResponseEntity<List<TransactionResponse>> getAllCategoryTransactions(
+    public ResponseEntity<?> getAllCategoryTransactions(
             @PathVariable Long companyId,
             @PathVariable Long categoryId
     ) throws NotFoundException {
@@ -36,7 +36,7 @@ public class TransactionsController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
     @GetMapping("/{transactionId}")
-    public ResponseEntity<TransactionResponse> getTransactionById(
+    public ResponseEntity<?> getTransactionById(
             @PathVariable Long companyId,
             @PathVariable Long categoryId,
             @PathVariable Long transactionId
@@ -47,7 +47,7 @@ public class TransactionsController {
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write') ||" +
             "(hasRequiredPermissions(#companyId, 'employee:write') && isResponsibleUser(#companyId, #categoryId))")
     @PostMapping
-    public ResponseEntity<List<TransactionResponse>> addNewTransaction(
+    public ResponseEntity<?> addNewTransaction(
             @PathVariable Long companyId,
             @PathVariable Long categoryId,
             @RequestBody TransactionAdditionRequest request,
@@ -64,8 +64,8 @@ public class TransactionsController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write') ||" +
             "(hasRequiredPermissions(#companyId, 'employee:write') && isResponsibleUser(#companyId, #categoryId))")
-    @PatchMapping("/{transactionId}")
-    public ResponseEntity<TransactionResponse> updateTransaction(
+    @PutMapping("/{transactionId}")
+    public ResponseEntity<?> updateTransaction(
             @PathVariable Long companyId,
             @PathVariable Long categoryId,
             @PathVariable Long transactionId,

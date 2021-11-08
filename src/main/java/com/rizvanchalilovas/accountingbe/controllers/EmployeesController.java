@@ -6,6 +6,7 @@ import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.services.interfaces.CompanyService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,18 +32,22 @@ public class EmployeesController {
 
         var employeesResponse = companyService.addEmployee(companyId, request);
 
-        return ResponseEntity.ok(employeesResponse);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(employeesResponse);
     }
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write')")
-    @DeleteMapping
+    @DeleteMapping("/{employeeId}")
     public ResponseEntity<?> removeEmployee(
             @PathVariable Long companyId,
-            @Valid @RequestBody EmployeeRemovalRequest request
+            @PathVariable Long employeeId
     ) throws NotFoundException {
 
-        companyService.removeEmployee(companyId, request);
+        companyService.removeEmployee(companyId, employeeId);
 
-        return ResponseEntity.ok("Employee was successfully removed");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

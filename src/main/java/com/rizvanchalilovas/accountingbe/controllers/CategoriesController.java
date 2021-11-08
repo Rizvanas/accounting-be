@@ -2,8 +2,6 @@ package com.rizvanchalilovas.accountingbe.controllers;
 
 import com.rizvanchalilovas.accountingbe.dtos.category.requests.CategoryAdditionRequest;
 import com.rizvanchalilovas.accountingbe.dtos.category.requests.CategoryUpdateRequest;
-import com.rizvanchalilovas.accountingbe.dtos.category.responses.CategoryDetailsResponse;
-import com.rizvanchalilovas.accountingbe.dtos.category.responses.CategoryResponse;
 import com.rizvanchalilovas.accountingbe.services.interfaces.CategoryService;
 import javassist.NotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/companies/{companyId}/categories")
@@ -26,7 +23,7 @@ public class CategoriesController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAll(@PathVariable Long companyId) throws NotFoundException {
+    public ResponseEntity<?> getAll(@PathVariable Long companyId) throws NotFoundException {
         var categories = categoryService.getCategoriesByCompanyId(companyId);
 
         if (categories.isEmpty()) {
@@ -38,7 +35,7 @@ public class CategoriesController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:read', 'admin:read', 'employee:read', 'guest:read')")
     @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> get(
+    public ResponseEntity<?> get(
             @PathVariable Long companyId,
             @PathVariable Long categoryId
     ) throws NotFoundException {
@@ -50,7 +47,7 @@ public class CategoriesController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write', 'employee:write')")
     @PostMapping
-    public ResponseEntity<CategoryResponse> addNewCategory(
+    public ResponseEntity<?> addNewCategory(
             @PathVariable Long companyId,
             @Valid @RequestBody CategoryAdditionRequest request,
             UriComponentsBuilder builder
@@ -65,8 +62,8 @@ public class CategoriesController {
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write') ||" +
             "(hasRequiredPermissions(#companyId, 'employee:write') && isResponsibleUser(#companyId, #categoryId))")
-    @PatchMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> updateCategory(
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<?> updateCategory(
             @PathVariable Long companyId,
             @PathVariable Long categoryId,
             @Valid @RequestBody CategoryUpdateRequest request,
@@ -81,7 +78,7 @@ public class CategoriesController {
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write') ||" +
             "(hasRequiredPermissions(#companyId, 'employee:write') && isResponsibleUser(#companyId, #categoryId))")
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> removeCategory(
+    public ResponseEntity<?> removeCategory(
             @PathVariable Long companyId,
             @PathVariable Long categoryId
     ) throws NotFoundException {

@@ -17,5 +17,5 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
 public class EmployeeRemovalRequest {
     @NotNull
-    private String username;
+    private Long responsibleEmployeeId;
 }

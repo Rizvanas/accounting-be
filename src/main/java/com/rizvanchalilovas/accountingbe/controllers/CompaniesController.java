@@ -28,7 +28,7 @@ public class CompaniesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyListItem>> list(Principal principal)
+    public ResponseEntity<?> list(Principal principal)
             throws NotFoundException {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -46,7 +46,7 @@ public class CompaniesController {
     }
 
     @PostMapping
-    public ResponseEntity<CompanyListItem> add(@Valid @RequestBody CompanyAdditionRequest request)
+    public ResponseEntity<?> add(@Valid @RequestBody CompanyAdditionRequest request)
             throws NotFoundException, AlreadyExistsException {
         var companyResponse = companyService.addNewCompany(request);
 
@@ -55,17 +55,16 @@ public class CompaniesController {
                 .body(companyResponse);
     }
 
-    @PreAuthorize("(#request.ownerUsername == null" +
-            " and hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write')) " +
-            "or hasRequiredPermissions(#companyId, 'ceo:write')")
-    @PatchMapping("/{companyId}")
-    public ResponseEntity<CompanyDetailsResponse> update(
+    @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write', 'admin:write')")
+    @PutMapping("/{companyId}")
+    public ResponseEntity<?> update(
             @PathVariable Long companyId,
             @Valid @RequestBody CompanyUpdateRequest request)
             throws NotFoundException {
 
         var companyResponse = companyService.updateCompanyDetails(companyId, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .body(companyResponse);
     }
 
     @PreAuthorize("hasRequiredPermissions(#companyId, 'ceo:write')")

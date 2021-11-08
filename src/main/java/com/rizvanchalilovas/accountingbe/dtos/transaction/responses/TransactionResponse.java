@@ -21,6 +21,7 @@ public class TransactionResponse {
     private String comment;
     private Long moneyAmount;
     private TransactionType type;
+    private Long companyId;
     private Long categoryId;
 
     public static TransactionResponse fromTransaction(Transaction t) {
@@ -30,6 +31,7 @@ public class TransactionResponse {
                 .comment(t.getComment())
                 .moneyAmount(t.getMoneyAmount())
                 .type(t.getType())
+                .companyId(t.getCategory().getCompany().getId())
                 .categoryId(t.getCategory().getId())
                 .build();
     }
