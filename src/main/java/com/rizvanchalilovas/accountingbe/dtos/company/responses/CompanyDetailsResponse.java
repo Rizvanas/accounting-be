@@ -30,7 +30,8 @@ public class CompanyDetailsResponse {
     private String ownerFullName;
     private Long totalIncome;
     private Long totalExpenditure;
-    private Set<PermissionEnum> currentUserPermissions;
+    private Long loggedInEmployeeId;
+    private Set<PermissionEnum> loggedInEmployeePermissions;
     private List<EmployeeResponse> employees;
     private List<CategoryResponse> categories;
 
@@ -40,10 +41,10 @@ public class CompanyDetailsResponse {
                 .findFirst()
                 .get().getUser();
 
-        var loggedInRole = c.getEmployees().stream()
+        var loggedInEmp = c.getEmployees().stream()
                 .filter(emp -> emp.getUser().getEmail().equals(loggedInEmail))
                 .findFirst()
-                .get().getRole();
+                .get();
 
         return builder()
                 .id(c.getId())
@@ -53,7 +54,8 @@ public class CompanyDetailsResponse {
                 .ownerFullName(companyCeo.getFullName())
                 .ownerEmail(companyCeo.getEmail())
                 .totalIncome(c.getTotalIncome())
-                .currentUserPermissions(loggedInRole.getPermissions().stream()
+                .loggedInEmployeeId(loggedInEmp.getId())
+                .loggedInEmployeePermissions(loggedInEmp.getRole().getPermissions().stream()
                         .map(PermissionEnum::fromPermission)
                         .collect(Collectors.toSet()))
                 .totalExpenditure(c.getTotalExpenditure())
