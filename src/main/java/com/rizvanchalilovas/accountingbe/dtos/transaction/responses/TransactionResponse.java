@@ -23,6 +23,7 @@ public class TransactionResponse {
     private TransactionType type;
     private Long companyId;
     private Long categoryId;
+    private Long managerId;
 
     public static TransactionResponse fromTransaction(Transaction t) {
         return builder()
@@ -33,6 +34,7 @@ public class TransactionResponse {
                 .type(t.getType())
                 .companyId(t.getCategory().getCompany().getId())
                 .categoryId(t.getCategory().getId())
+                .managerId(t.getCategory().getManager().getId())
                 .build();
     }
 }
