@@ -3,6 +3,7 @@ package com.rizvanchalilovas.accountingbe.exceptions.handlers;
 import com.rizvanchalilovas.accountingbe.exceptions.AlreadyExistsException;
 import com.rizvanchalilovas.accountingbe.exceptions.ApiException;
 import com.rizvanchalilovas.accountingbe.exceptions.ApiRequestException;
+import com.rizvanchalilovas.accountingbe.security.JwtAuthenticationException;
 import javassist.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -206,11 +207,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exception, exception.getStatus());
     }
 
-    @ExceptionHandler(value = {AuthenticationException.class})
-    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+    @ExceptionHandler(value = {JwtAuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(JwtAuthenticationException ex) {
         var exception = new ApiException(
                 HttpStatus.UNAUTHORIZED,
-                "Invalid email or password",
+                ex.getMessage(),
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
 

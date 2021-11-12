@@ -24,12 +24,11 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigurer jwtConfigurer;
+    private final UserDetailsServiceImlp userDetailsService;
 
-    @Autowired
-    UserDetailsServiceImlp userDetailsService;
-
-    public SecurityConfig(JwtConfigurer jwtConfigurer) {
+    public SecurityConfig(JwtConfigurer jwtConfigurer, UserDetailsServiceImlp userDetailsService) {
         this.jwtConfigurer = jwtConfigurer;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -44,12 +43,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .apply(jwtConfigurer)
+                .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/api/auth/register").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .apply(jwtConfigurer);
+                .anyRequest()
+                .authenticated();
     }
 
     @Bean
