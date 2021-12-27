@@ -2,7 +2,6 @@ package com.rizvanchalilovas.accountingbe.security;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
 @Data

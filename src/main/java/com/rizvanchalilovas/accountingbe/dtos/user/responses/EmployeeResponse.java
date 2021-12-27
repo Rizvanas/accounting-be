@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.rizvanchalilovas.accountingbe.models.CompanyEmployee;
-import com.rizvanchalilovas.accountingbe.models.Role;
 import com.rizvanchalilovas.accountingbe.models.RoleEnum;
-import com.rizvanchalilovas.accountingbe.models.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,6 +19,7 @@ public class EmployeeResponse {
     private String fullName;
     private String email;
     private RoleEnum role;
+    private Long companyId;
 
     public static EmployeeResponse fromEmployee(CompanyEmployee employee) {
         return builder()
@@ -29,6 +27,7 @@ public class EmployeeResponse {
                 .fullName(employee.getUser().getFullName())
                 .email(employee.getUser().getEmail())
                 .role(employee.getRole().getName())
+                .companyId(employee.getCompany().getId())
                 .build();
     }
 }

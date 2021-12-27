@@ -35,7 +35,6 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final UserJpaRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder encoder;
     private final UserService userService;
 
     @Autowired
@@ -43,13 +42,11 @@ public class AuthenticationController {
             AuthenticationManager authenticationManager,
             UserJpaRepository userRepository,
             JwtTokenProvider jwtTokenProvider,
-            PasswordEncoder encoder,
             UserService userService
     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.encoder = encoder;
         this.userService = userService;
     }
 
